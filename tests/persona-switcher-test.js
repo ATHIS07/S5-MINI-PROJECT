@@ -44,6 +44,12 @@ function runPersonaSwitcherTests() {
   const mgrSwitchIndex = indexHtml.indexOf('id="managerPersonaSwitcher"');
   assert(mgrSubIndex !== -1 && mgrSwitchIndex > mgrSubIndex && mgrSwitchIndex - mgrSubIndex < 500, 'Manager switcher positioned immediately below manager header name');
 
+  // Verify sidebar and navbar persona switchers
+  assert(indexHtml.includes('id="sidebarPersonaSelectorWrap"'), 'Sidebar persona switcher wrapper defined in index.html');
+  assert(indexHtml.includes('id="sidebarPersonaSelect"'), 'Sidebar persona select dropdown defined');
+  assert(indexHtml.includes('id="navbarPersonaDropdownWrap"'), 'Navbar persona dropdown wrapper defined in index.html');
+  assert(indexHtml.includes('id="navbarPersonaSelect"'), 'Navbar persona select dropdown defined');
+
   // [2] CSS Styling Verification
   console.log('\n[2] Checking CSS styling for Persona Switcher components...');
   assert(stylesCss.includes('.active-persona-bar'), '.active-persona-bar style rule defined in styles.css');
@@ -51,11 +57,14 @@ function runPersonaSwitcherTests() {
   assert(stylesCss.includes('.persona-pill-btn'), '.persona-pill-btn style rule defined in styles.css');
   assert(stylesCss.includes('.persona-pill-btn.active'), '.persona-pill-btn.active highlight style rule defined');
   assert(stylesCss.includes('.persona-quick-pills'), '.persona-quick-pills flex container style rule defined');
+  assert(stylesCss.includes('.sidebar-persona-select'), '.sidebar-persona-select style rule defined in styles.css');
+  assert(stylesCss.includes('.navbar-persona-select'), '.navbar-persona-select style rule defined in styles.css');
 
   // [3] JavaScript Logic Verification
   console.log('\n[3] Checking JavaScript controller logic in app.js...');
   assert(appJs.includes('window.switchActiveEmployee = function'), 'window.switchActiveEmployee defined in app.js');
   assert(appJs.includes('window.switchActiveManager = function'), 'window.switchActiveManager defined in app.js');
+  assert(appJs.includes('function syncGlobalPersonaBars'), 'syncGlobalPersonaBars defined in app.js');
   assert(appJs.includes("localStorage.setItem('cloudpulse_active_employee'"), 'Active employee persists to localStorage');
   assert(appJs.includes("localStorage.setItem('cloudpulse_active_manager'"), 'Active manager persists to localStorage');
   assert(appJs.includes("localStorage.getItem('cloudpulse_active_employee')"), 'Saved active employee loaded on database sync');
@@ -70,3 +79,4 @@ function runPersonaSwitcherTests() {
 }
 
 runPersonaSwitcherTests();
+

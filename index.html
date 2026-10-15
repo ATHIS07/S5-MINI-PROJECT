@@ -18,7 +18,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Core Stylesheet with cache buster -->
-  <link rel="stylesheet" href="styles.css?v=3.3">
+  <link rel="stylesheet" href="styles.css?v=6.0">
 </head>
 <body>
 
@@ -66,6 +66,17 @@
             <span class="user-role" id="sidebarUserRole">Head of Cloud Org</span>
           </div>
         </div>
+        <!-- Active Persona Switcher directly below user profile in sidebar -->
+        <div class="sidebar-persona-selector-wrap" id="sidebarPersonaSelectorWrap" style="display: none;">
+          <div class="sidebar-persona-header">
+            <span class="sidebar-persona-label" id="sidebarPersonaLabel">Switch Contributor:</span>
+          </div>
+          <select id="sidebarPersonaSelect" class="sidebar-persona-select" aria-label="Switch active persona profile">
+            <option value="VIJAY HARIPRIYAN D" selected>VIJAY HARIPRIYAN D (Cloud)</option>
+            <option value="PRASANA">PRASANA (DevOps)</option>
+            <option value="Veerandhra">Veerandhra (Security)</option>
+          </select>
+        </div>
       </div>
     </aside>
 
@@ -96,6 +107,17 @@
               <i data-lucide="user-check" style="width: 14px; height: 14px;"></i>
               <span>Employee</span>
             </button>
+
+            <!-- Navbar Persona Switcher (Immediate select in top header bar) -->
+            <div class="navbar-persona-dropdown-wrap" id="navbarPersonaDropdownWrap" style="display: none;">
+              <span class="nav-persona-divider"></span>
+              <span class="nav-persona-label" id="navbarPersonaLabel">Active Employee:</span>
+              <select id="navbarPersonaSelect" class="navbar-persona-select" aria-label="Switch active person">
+                <option value="VIJAY HARIPRIYAN D" selected>VIJAY HARIPRIYAN D</option>
+                <option value="PRASANA">PRASANA</option>
+                <option value="Veerandhra">Veerandhra</option>
+              </select>
+            </div>
           </div>
 
         </div>
@@ -401,7 +423,7 @@
                 <span class="breadcrumb-current" id="managerBreadcrumbName">Department Team Pod</span>
               </div>
               <h1 id="managerHeaderTitle">Department Team Management <span class="badge-role-tag badge-role-manager"><i data-lucide="briefcase" style="width:11px; height:11px;"></i> Team Management</span></h1>
-              <p id="managerHeaderSubtitle">Manager: <strong id="managerHeaderName">No Manager Appointed</strong> • <span id="managerHeaderEngineers">0</span> Engineers Assigned • <span id="managerHeaderDirectives">0</span> Head Directives Active</p>
+              <p id="managerHeaderSubtitle">Manager: <strong id="managerHeaderName">Pranave D</strong> • <span id="managerHeaderEngineers">3</span> Engineers Assigned • <span id="managerHeaderDirectives">1</span> Head Directives Active</p>
               
               <!-- Persona Switcher: Select and change active manager -->
               <div class="active-persona-bar" id="managerPersonaSwitcher">
@@ -411,10 +433,14 @@
                 </div>
                 <div class="persona-switch-inputs">
                   <select id="managerSelectActive" class="persona-switch-dropdown" aria-label="Select active manager profile">
-                    <!-- Populated dynamically with all managers -->
+                    <option value="Pranave D" selected>Pranave D — Engineering &amp; Cloud Architecture (Manager)</option>
                   </select>
                   <div class="persona-quick-pills" id="managerQuickPills" role="group" aria-label="Quick select manager">
-                    <!-- Quick pill buttons for 1-click switching -->
+                    <button type="button" class="persona-pill-btn active" onclick="window.switchActiveManager('Pranave D')" title="Switch to Pranave D Pod">
+                      <span class="pill-dot"></span>
+                      <span>Pranave D</span>
+                      <span class="pill-role">Engineering</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -574,7 +600,7 @@
                 <span class="breadcrumb-current" id="employeeBreadcrumbName">Individual Contributor</span>
               </div>
               <h1>Individual Contributor Workspace <span class="badge-role-tag badge-role-employee"><i data-lucide="user-check" style="width:11px; height:11px;"></i> Contributor Workspace</span></h1>
-              <p id="employeeHeaderSubtitle">Employee: <strong id="employeeHeaderName">Loading...</strong> (<span id="employeeHeaderRole">Individual Contributor</span>) • Reporting to Manager: <strong id="employeeHeaderManager">Unassigned</strong></p>
+              <p id="employeeHeaderSubtitle">Employee: <strong id="employeeHeaderName">VIJAY HARIPRIYAN D</strong> (<span id="employeeHeaderRole">Senior Cloud Engineer</span>) • Reporting to Manager: <strong id="employeeHeaderManager">Pranave D</strong></p>
               
               <!-- Persona Switcher: Select and change active employee -->
               <div class="active-persona-bar" id="employeePersonaSwitcher">
@@ -584,10 +610,26 @@
                 </div>
                 <div class="persona-switch-inputs">
                   <select id="employeeSelectActive" class="persona-switch-dropdown" aria-label="Select active employee profile">
-                    <!-- Populated dynamically with all employees -->
+                    <option value="VIJAY HARIPRIYAN D" selected>VIJAY HARIPRIYAN D — Senior Cloud Engineer (Engineering)</option>
+                    <option value="PRASANA">PRASANA — DevOps Engineer (Engineering)</option>
+                    <option value="Veerandhra">Veerandhra — Cyber Security Engineer (Security)</option>
                   </select>
                   <div class="persona-quick-pills" id="employeeQuickPills" role="group" aria-label="Quick select employee">
-                    <!-- Quick pill buttons for 1-click switching -->
+                    <button type="button" class="persona-pill-btn active" onclick="window.switchActiveEmployee('VIJAY HARIPRIYAN D')" title="Switch to VIJAY HARIPRIYAN D">
+                      <span class="pill-dot"></span>
+                      <span>VIJAY HARIPRIYAN D</span>
+                      <span class="pill-role">Senior Cloud Engineer</span>
+                    </button>
+                    <button type="button" class="persona-pill-btn" onclick="window.switchActiveEmployee('PRASANA')" title="Switch to PRASANA">
+                      <span class="pill-dot"></span>
+                      <span>PRASANA</span>
+                      <span class="pill-role">DevOps Engineer</span>
+                    </button>
+                    <button type="button" class="persona-pill-btn" onclick="window.switchActiveEmployee('Veerandhra')" title="Switch to Veerandhra">
+                      <span class="pill-dot"></span>
+                      <span>Veerandhra</span>
+                      <span class="pill-role">Cyber Security Engineer</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1682,9 +1724,9 @@ Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,OPTIONS</pre>
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Centralized API Client & Service Engine -->
-  <script src="api-client.js?v=4.0"></script>
+  <script src="api-client.js?v=6.0"></script>
 
   <!-- Application Engine -->
-  <script src="app.js?v=4.0"></script>
+  <script src="app.js?v=6.0"></script>
 </body>
 </html>

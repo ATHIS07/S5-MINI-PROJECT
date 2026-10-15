@@ -2841,3 +2841,139 @@ textarea:focus-visible,
   font-style: italic;
 }
 
+#employeePersonaSwitcher {
+  border-left: 3px solid var(--brand-primary);
+  background: var(--bg-surface-elevated);
+}
+
+#managerPersonaSwitcher {
+  border-left: 3px solid #6366F1;
+  background: var(--bg-surface-elevated);
+}
+
+/* ==========================================================================
+   SIDEBAR PROFILE PERSONA SELECTOR (Under Employee/Manager name in sidebar)
+   ========================================================================== */
+.sidebar-persona-selector-wrap {
+  margin-top: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.sidebar-persona-selector-wrap:hover {
+  border-color: var(--border-medium);
+}
+
+.sidebar-persona-header {
+  margin-bottom: 0.35rem;
+}
+
+.sidebar-persona-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-persona-select {
+  width: 100%;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 1.6rem 0 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xs);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  transition: all var(--transition-fast);
+}
+
+[data-theme="dark"] .sidebar-persona-select {
+  background-color: var(--bg-surface-elevated);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.sidebar-persona-select:hover {
+  border-color: var(--brand-primary);
+}
+
+.sidebar-persona-select:focus-visible {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* ==========================================================================
+   TOP NAVBAR PERSONA SWITCHER (Quick switcher right in the header bar)
+   ========================================================================== */
+.navbar-persona-dropdown-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.nav-persona-divider {
+  display: inline-block;
+  width: 1px;
+  height: 18px;
+  background-color: var(--border-medium);
+  margin-right: 0.25rem;
+}
+
+.nav-persona-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.navbar-persona-select {
+  height: 30px;
+  min-height: 30px;
+  min-width: 150px;
+  max-width: 220px;
+  padding: 0 1.6rem 0 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  transition: all var(--transition-fast);
+}
+
+[data-theme="dark"] .navbar-persona-select {
+  background-color: var(--bg-surface-elevated);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.navbar-persona-select:hover {
+  border-color: var(--brand-primary);
+}
+
+.navbar-persona-select:focus-visible {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+

@@ -128,7 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (e) {}
-    return [];
+    return [
+      { id: 'mgr-pranave', name: 'Pranave D', dept: 'Engineering & Cloud Architecture', role: 'Engineering Manager', managerScore: 98, avatar: EMPTY_AVATAR, subordinatesCount: 3, assignedDirectivesCount: 1 }
+    ];
   }
 
   function saveManagersToStorage() {
@@ -150,7 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (e) {}
-    return [];
+    return [
+      { id: 'emp-vijay', name: 'VIJAY HARIPRIYAN D', role: 'Senior Cloud Engineer', dept: 'Engineering', manager: 'Pranave D', productivity: 96, focusHours: '6.5h', status: 'Online', kudos: 'Cloud & Infrastructure Specialist', avatar: EMPTY_AVATAR },
+      { id: 'emp-prasana', name: 'PRASANA', role: 'DevOps Engineer', dept: 'Engineering', manager: 'Pranave D', productivity: 94, focusHours: '5.2h', status: 'Online', kudos: 'CI/CD & Kubernetes Pipeline Architect', avatar: EMPTY_AVATAR },
+      { id: 'emp-veerandhra', name: 'Veerandhra', role: 'Cyber Security Engineer', dept: 'Security', manager: 'Pranave D', productivity: 95, focusHours: '6.0h', status: 'Online', kudos: 'Zero Trust & IAM Security Specialist', avatar: EMPTY_AVATAR }
+    ];
   }
 
   function saveEmployeesToStorage() {
@@ -282,6 +288,10 @@ document.addEventListener('DOMContentLoaded', () => {
       velocityTrend: null
     }
   };
+
+  // Immediate persona synchronization on load
+  syncManagerRoleWithDatabase();
+  syncEmployeeRoleWithDatabase();
 
   // =========================================================================
   // 2. THEME ENGINE (Light & Dark Mode)
@@ -997,9 +1007,78 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnDynamicRoleAction = document.getElementById('btnDynamicRoleAction');
   const dynamicRoleActionText = document.getElementById('dynamicRoleActionText');
 
+  function syncGlobalPersonaBars(role) {
+    const navWrap = document.getElementById('navbarPersonaDropdownWrap');
+    const navLabel = document.getElementById('navbarPersonaLabel');
+    const navSelect = document.getElementById('navbarPersonaSelect');
+
+    const sbWrap = document.getElementById('sidebarPersonaSelectorWrap');
+    const sbLabel = document.getElementById('sidebarPersonaLabel');
+    const sbSelect = document.getElementById('sidebarPersonaSelect');
+
+    if (role === 'employee') {
+      const activeEmp = (state.roles.employee && state.roles.employee.name && state.roles.employee.name !== 'No Employee Created')
+        ? state.roles.employee.name
+        : (state.employees && state.employees[0] ? state.employees[0].name : 'VIJAY HARIPRIYAN D');
+
+      const opts = (state.employees && state.employees.length > 0)
+        ? state.employees.map(e => `<option value="${e.name}" ${e.name === activeEmp ? 'selected' : ''}>${e.name} — ${e.role || 'Contributor'}</option>`).join('')
+        : `<option value="VIJAY HARIPRIYAN D" selected>VIJAY HARIPRIYAN D</option><option value="PRASANA">PRASANA</option><option value="Veerandhra">Veerandhra</option>`;
+
+      if (navWrap) navWrap.style.display = 'inline-flex';
+      if (navLabel) navLabel.textContent = 'Active Employee:';
+      if (navSelect) {
+        navSelect.innerHTML = opts;
+        navSelect.value = activeEmp;
+        navSelect.onchange = (e) => window.switchActiveEmployee(e.target.value);
+      }
+
+      if (sbWrap) sbWrap.style.display = 'block';
+      if (sbLabel) sbLabel.textContent = 'Switch Employee:';
+      if (sbSelect) {
+        sbSelect.innerHTML = opts;
+        sbSelect.value = activeEmp;
+        sbSelect.onchange = (e) => window.switchActiveEmployee(e.target.value);
+      }
+    } else if (role === 'manager') {
+      const activeMgr = (state.roles.manager && state.roles.manager.name && state.roles.manager.name !== 'No Manager Appointed')
+        ? state.roles.manager.name
+        : (state.managers && state.managers[0] ? state.managers[0].name : 'Pranave D');
+
+      const opts = (state.managers && state.managers.length > 0)
+        ? state.managers.map(m => `<option value="${m.name}" ${m.name === activeMgr ? 'selected' : ''}>${m.name} (${m.dept || 'Engineering'})</option>`).join('')
+        : `<option value="Pranave D" selected>Pranave D (Engineering &amp; Cloud)</option>`;
+
+      if (navWrap) navWrap.style.display = 'inline-flex';
+      if (navLabel) navLabel.textContent = 'Active Manager:';
+      if (navSelect) {
+        navSelect.innerHTML = opts;
+        navSelect.value = activeMgr;
+        navSelect.onchange = (e) => window.switchActiveManager(e.target.value);
+      }
+
+      if (sbWrap) sbWrap.style.display = 'block';
+      if (sbLabel) sbLabel.textContent = 'Switch Manager:';
+      if (sbSelect) {
+        sbSelect.innerHTML = opts;
+        sbSelect.value = activeMgr;
+        sbSelect.onchange = (e) => window.switchActiveManager(e.target.value);
+      }
+    } else {
+      // Head executive
+      if (navWrap) navWrap.style.display = 'none';
+      if (sbWrap) sbWrap.style.display = 'none';
+    }
+  }
+
   window.switchRole = function(role) {
     state.currentRole = role;
     const profile = state.roles[role];
+
+    // Ensure dashboard view is visible when switching role so the user sees the role dashboard immediately
+    if (state.currentView !== 'dashboard') {
+      window.switchView('dashboard');
+    }
 
     // Update Role Switcher Tabs
     [btnRoleHead, btnRoleManager, btnRoleEmployee].forEach(btn => {
@@ -1044,6 +1123,9 @@ document.addEventListener('DOMContentLoaded', () => {
       btnHeadAddEmployee.style.display = (role === 'head' ? 'inline-flex' : 'none');
     }
 
+    // Synchronize Top Navbar Persona Selector & Sidebar Persona Selector
+    syncGlobalPersonaBars(role);
+
     // Refresh views
     renderSidebarNavForRole(role);
     renderDashboard();
@@ -1065,6 +1147,24 @@ document.addEventListener('DOMContentLoaded', () => {
     state.roles.employee.pulse = `${emp.productivity || 95}%`;
     localStorage.setItem('cloudpulse_active_employee', emp.name);
 
+    // Synchronize all employee dropdowns and quick pills across the entire page
+    const empSelect = document.getElementById('employeeSelectActive');
+    if (empSelect && empSelect.value !== emp.name) empSelect.value = emp.name;
+
+    const sbSelect = document.getElementById('sidebarPersonaSelect');
+    if (sbSelect && sbSelect.value !== emp.name) sbSelect.value = emp.name;
+
+    const navSelect = document.getElementById('navbarPersonaSelect');
+    if (navSelect && navSelect.value !== emp.name) navSelect.value = emp.name;
+
+    document.querySelectorAll('#employeeQuickPills .persona-pill-btn').forEach(btn => {
+      if (btn.getAttribute('data-emp-name') === emp.name || btn.textContent.includes(emp.name)) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
     if (state.currentRole === 'employee') {
       if (sidebarUserName) sidebarUserName.textContent = emp.name;
       if (sidebarUserRole) sidebarUserRole.textContent = emp.role;
@@ -1072,6 +1172,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (sidebarPulseScore) sidebarPulseScore.textContent = `${emp.productivity || 95}%`;
     }
 
+    syncGlobalPersonaBars(state.currentRole);
     renderSidebarNavForRole(state.currentRole);
     updateEmployeeStatsRibbon();
     renderEmployeeDashboard();
@@ -1089,6 +1190,24 @@ document.addEventListener('DOMContentLoaded', () => {
     state.roles.manager.pulse = `${mgr.managerScore || 95}%`;
     localStorage.setItem('cloudpulse_active_manager', mgr.name);
 
+    // Synchronize all manager dropdowns and quick pills across the entire page
+    const mgrSelect = document.getElementById('managerSelectActive');
+    if (mgrSelect && mgrSelect.value !== mgr.name) mgrSelect.value = mgr.name;
+
+    const sbSelect = document.getElementById('sidebarPersonaSelect');
+    if (sbSelect && state.currentRole === 'manager' && sbSelect.value !== mgr.name) sbSelect.value = mgr.name;
+
+    const navSelect = document.getElementById('navbarPersonaSelect');
+    if (navSelect && state.currentRole === 'manager' && navSelect.value !== mgr.name) navSelect.value = mgr.name;
+
+    document.querySelectorAll('#managerQuickPills .persona-pill-btn').forEach(btn => {
+      if (btn.getAttribute('data-mgr-name') === mgr.name || btn.textContent.includes(mgr.name)) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
     if (state.currentRole === 'manager') {
       if (sidebarUserName) sidebarUserName.textContent = mgr.name;
       if (sidebarUserRole) sidebarUserRole.textContent = mgr.role || `${mgr.dept} Manager`;
@@ -1096,6 +1215,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (sidebarPulseScore) sidebarPulseScore.textContent = `${mgr.managerScore || 95}%`;
     }
 
+    syncGlobalPersonaBars(state.currentRole);
     renderSidebarNavForRole('manager');
     updateManagerStatsRibbon();
     renderManagerDashboard();
@@ -3295,6 +3415,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
+
+    // 10. Sync Top Navbar Persona Selector & Sidebar Persona Selector
+    syncGlobalPersonaBars(state.currentRole);
   }
 
   window.openAddEmployeeModal = function() {
@@ -4016,6 +4139,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateModeBannerUI();
   updateTimerDisplay();
   updateEmployeeSelectDropdowns();
+  syncGlobalPersonaBars(state.currentRole);
 
   // Always connect with database and synchronize tasks from AWS DynamoDB
   if (configService) configService.setMode('live');
