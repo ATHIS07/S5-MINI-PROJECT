@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudPulse | Enterprise Goal & Productivity Management</title>
+  <meta name="description" content="CloudPulse 3-Tier Enterprise Productivity System for Head, Team Managers, and Employees.">
+  
+  <!-- Typography: Newsreader (Editorial Serif) + Inter (Clean Text) + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Core Stylesheet with cache buster -->
+  <link rel="stylesheet" href="styles.css?v=3.3">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- ====================================================================
+         SIDEBAR: DYNAMIC CONTEXTUAL NAVIGATION
+         ==================================================================== -->
+    <aside class="app-sidebar" id="appSidebar">
+      <!-- Header -->
+      <div class="sidebar-header">
+        <div class="brand-logo">
+          <div class="logo-icon-wrapper">
+            <i data-lucide="compass" style="width: 18px; height: 18px;"></i>
+          </div>
+          <div class="brand-info">
+            <span class="brand-title">CloudPulse</span>
+            <span class="brand-badge">Enterprise Edition</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workspace label -->
+      <div class="workspace-switcher">
+        <div class="workspace-meta">
+          <span class="workspace-label">Organization</span>
+          <span class="workspace-name">Executive Directory</span>
+        </div>
+      </div>
+
+      <!-- Sidebar Navigation Menu (Dynamically populated based on active role) -->
+      <nav class="sidebar-nav" id="sidebarNavMenu">
+        <!-- Rendered by app.js based on Head, Manager, or Employee -->
+      </nav>
+
+      <!-- Sidebar User Profile Footer (Updates dynamically with active persona) -->
+      <div class="sidebar-footer">
+        <div class="user-compact-profile" id="userProfileBtn">
+          <div class="avatar-wrapper">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'%3E%3Crect width='64' height='64' rx='32' fill='%23CBD5E1'/%3E%3Ccircle cx='32' cy='24' r='11' fill='%2364748B'/%3E%3Cpath d='M14 54c0-9.941 8.059-18 18-18s18 8.059 18 18' fill='%2364748B'/%3E%3C/svg%3E" alt="Profile Photo" id="sidebarAvatar">
+            <span class="avatar-status-dot"></span>
+          </div>
+          <div class="user-info-text">
+            <span class="user-name" id="sidebarUserName">ATHISH</span>
+            <span class="user-role" id="sidebarUserRole">Head of Cloud Org</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         MAIN APP CONTENT AREA
+         ==================================================================== -->
+    <main class="app-main">
+      
+      <!-- Top Sticky Navbar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="mobile-menu-toggle" id="mobileMenuBtn">
+            <i data-lucide="menu" style="width: 18px; height: 18px;"></i>
+          </button>
+          
+          <!-- 3-Tier Role Switcher -->
+          <div class="role-switcher-wrapper">
+            <span class="role-switcher-label">View as:</span>
+            <button class="role-tab-btn active" data-role="head" id="btnRoleHead">
+              <i data-lucide="crown" style="width: 14px; height: 14px;"></i>
+              <span>Head</span>
+            </button>
+            <button class="role-tab-btn" data-role="manager" id="btnRoleManager">
+              <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
+              <span>Team Manager</span>
+            </button>
+            <button class="role-tab-btn" data-role="employee" id="btnRoleEmployee">
+              <i data-lucide="user-check" style="width: 14px; height: 14px;"></i>
+              <span>Employee</span>
+            </button>
+          </div>
+
+        </div>
+
+        <div class="navbar-right">
+          <!-- Command Palette Trigger -->
+          <div class="navbar-search-trigger" id="cmdSearchTrigger">
+            <i data-lucide="search" style="width: 14px; height: 14px;"></i>
+            <span>Search directory, tasks, goals...</span>
+            <span class="search-shortcut-kbd">⌘K</span>
+          </div>
+
+          <!-- Theme Toggle (Light / Dark) -->
+          <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
+            <i data-lucide="moon" id="themeToggleIcon" style="width: 15px; height: 15px;"></i>
+          </button>
+
+          <!-- Notification Bell -->
+          <button class="nav-icon-btn" id="notifBellBtn" title="Alerts & Delegation Notices">
+            <i data-lucide="bell" style="width: 16px; height: 16px;"></i>
+            <span class="notification-count" id="notifCount">3</span>
+          </button>
+
+          <!-- Dynamic Role Action Button (Clean, dignified) -->
+          <button class="btn-primary" id="btnDynamicRoleAction">
+            <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+            <span id="dynamicRoleActionText">Assign Goal to Manager</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Views Container -->
+      <div class="page-view-wrapper">
+        
+        <!-- ==================================================================
+             VIEW 1: DASHBOARD (EXECUTIVE OVERVIEW + 3-TIER ROLES)
+             ================================================================== -->
+        <div class="page-view-section active" id="view-dashboard">
+
+          <!-- ==================================================================
+               ROLE DASHBOARD 1: HEAD (EXECUTIVE) DASHBOARD
+               Head assigns tasks to Team Managers & has full oversight of all
+               ================================================================== -->
+          <section class="role-dashboard-container active" id="dashboard-head">
+            
+            <div class="content-header">
+              <div class="content-title-area">
+                <div class="breadcrumb-trail">
+                  <span>Enterprise Org</span>
+                  <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                  <span>Executive Governance</span>
+                  <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                  <span class="breadcrumb-current">Strategic Allocation</span>
+                </div>
+                <h1>Executive Governance & Strategic Allocation <span class="badge-role-tag badge-role-head"><i data-lucide="crown" style="width:11px; height:11px;"></i> Head Executive</span></h1>
+                <p>Issue directives directly to Team Managers, oversee workforce capacity, and track live organizational delivery.</p>
+              </div>
+              <div class="header-action-group">
+                <button class="btn-secondary" id="btnHeadExport">
+                  <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+                  <span>Export Org Audit</span>
+                </button>
+                <button class="btn-primary" id="btnHeadOpenCreateManagerModal" onclick="window.openCreateManagerModal()">
+                  <i data-lucide="user-plus" style="width: 14px; height: 14px;"></i>
+                  <span>+ Create Manager</span>
+                </button>
+                <button class="btn-secondary" id="btnOpenHeadAssignModal">
+                  <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                  <span>Assign Goal to Manager</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Head Executive Productivity Metrics Ribbon -->
+            <div class="metrics-ribbon" style="margin-bottom: 1.25rem;">
+              <div class="metric-cell">
+                <div class="metric-cell-label">
+                  <span>Total Tasks</span>
+                  <span class="metric-trend-badge trend-up" id="statTasksTrend">Live</span>
+                </div>
+                <div class="metric-cell-val" id="statTotalTasks">0 <span class="metric-unit">Tasks</span></div>
+                <div class="metric-cell-sub" id="statTotalTasksSub">Across all departments</div>
+              </div>
+
+              <div class="metric-cell">
+                <div class="metric-cell-label">
+                  <span>Completed Tasks</span>
+                  <span class="metric-trend-badge trend-up" id="statCompletionBadge">Done</span>
+                </div>
+                <div class="metric-cell-val" style="color: var(--success-text);" id="statCompletedTasks">0 <span class="metric-unit">Done</span></div>
+                <div class="metric-cell-sub" id="statCompletedTasksSub">Verified by Managers</div>
+              </div>
+
+              <div class="metric-cell">
+                <div class="metric-cell-label">
+                  <span>Pending / Review</span>
+                  <span class="metric-trend-badge trend-neutral">In Flow</span>
+                </div>
+                <div class="metric-cell-val" style="color: var(--brand-primary);" id="statPendingTasks">0 <span class="metric-unit">Active</span></div>
+                <div class="metric-cell-sub" id="statPendingTasksSub">In active sprint</div>
+              </div>
+
+              <div class="metric-cell">
+                <div class="metric-cell-label">
+                  <span>Overdue Tasks</span>
+                  <span class="metric-trend-badge trend-down" id="statOverdueBadge">0 Due</span>
+                </div>
+                <div class="metric-cell-val" style="color: var(--danger-text);" id="statOverdueTasks">0 <span class="metric-unit">Late</span></div>
+                <div class="metric-cell-sub" id="statOverdueTasksSub">100% SLA Adherence</div>
+              </div>
+
+              <div class="metric-cell">
+                <div class="metric-cell-label">
+                  <span>Strategic Goals (OKRs)</span>
+                  <span class="metric-trend-badge trend-up">Head Directives</span>
+                </div>
+                <div class="metric-cell-val" id="statActiveGoals">0 <span class="metric-unit">Goals</span></div>
+                <div class="metric-cell-sub" id="statActiveGoalsSub">Strategic initiatives</div>
+              </div>
+
+              <div class="metric-cell">
+                <div class="metric-cell-label">
+                  <span>Completion Rate</span>
+                  <span class="metric-trend-badge trend-up">0%</span>
+                </div>
+                <div class="metric-cell-val" style="color: var(--brand-primary);" id="statCompletionRate">0%</div>
+                <div class="metric-cell-sub" id="statCompletionRateSub">Calculated from live tasks</div>
+              </div>
+            </div>
+
+            <!-- Head Enterprise Chart.js Visual Grid -->
+            <div class="dashboard-charts-grid">
+              <!-- Chart 1: Task Status Distribution -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div class="chart-title-group">
+                    <h2>Task Status Distribution</h2>
+                    <p>Real-time delivery breakdown across completion stages</p>
+                  </div>
+                  <span class="tag-pill tag-indigo" id="chartTaskStatusTag">Live Status</span>
+                </div>
+                <div class="chart-canvas-container">
+                  <canvas id="chartTaskStatus"></canvas>
+                </div>
+              </div>
+
+              <!-- Chart 2: Strategic Goal Progress (OKRs) -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div class="chart-title-group">
+                    <h2>Strategic OKR & Directive Progress</h2>
+                    <p>Parent goal completion percentages assigned by Head</p>
+                  </div>
+                  <span class="tag-pill tag-role-head">Head OKRs</span>
+                </div>
+                <div class="chart-canvas-container">
+                  <canvas id="chartGoalProgress"></canvas>
+                </div>
+              </div>
+            </div>
+
+          <!-- Head Sub-Navigation Tabs Bar -->
+          <div class="dashboard-tabs-bar">
+            <div class="tabs-group">
+              <button class="tab-item active" data-head-tab="tab-head-cascade">
+                <i data-lucide="git-merge" style="width: 14px; height: 14px;"></i>
+                <span>3-Tier Task Cascade</span>
+                <span class="tab-badge">Live Tree</span>
+              </button>
+              <button class="tab-item" data-head-tab="tab-head-managers">
+                <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
+                <span>Team Managers Governance</span>
+                <span class="tab-badge" id="badgeHeadManagersCount">0</span>
+              </button>
+              <button class="tab-item" data-head-tab="tab-head-workforce">
+                <i data-lucide="users" style="width: 14px; height: 14px;"></i>
+                <span>Workforce Directory</span>
+                <span class="tab-badge" id="badgeHeadWorkforceCount">0</span>
+              </button>
+            </div>
+            <div class="tabs-right-filter">
+              <button class="btn-secondary" style="height: 30px; font-size: 0.74rem; padding: 0 10px;" id="btnHeadAllPanels">
+                <i data-lucide="layout-grid" style="width: 12px; height: 12px;"></i>
+                <span id="btnHeadAllPanelsText">All Panels</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab Panel 1: Hierarchy Cascade Tree -->
+          <div id="tab-head-cascade" class="dashboard-tab-panel active">
+            <div class="cascade-section">
+              <div class="cascade-header">
+                <div>
+                  <h2 style="font-size: 1.05rem; font-weight: 800;">3-Tier Task Cascade Tree (Live Delegations)</h2>
+                  <p style="font-size: 0.78rem; color: var(--text-tertiary);">Directives issued by Head &rarr; Distributed by Managers &rarr; Executed by Employees</p>
+                </div>
+                <div class="cascade-flow-pill">
+                  <span style="color: #B45309; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="crown" style="width: 12px; height: 12px;"></i> Head</span>
+                  <i data-lucide="arrow-right" style="width: 12px; height: 12px; color: var(--text-muted);"></i>
+                  <span style="color: #1E40AF; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="briefcase" style="width: 12px; height: 12px;"></i> Manager</span>
+                  <i data-lucide="arrow-right" style="width: 12px; height: 12px; color: var(--text-muted);"></i>
+                  <span style="color: #065F46; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="user-check" style="width: 12px; height: 12px;"></i> Employee</span>
+                </div>
+              </div>
+              <div id="headCascadeTreeContainer">
+                <!-- Dynamically rendered cascading tree -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Panel 2: Team Managers Matrix Section -->
+          <div id="tab-head-managers" class="dashboard-tab-panel">
+            <div class="chart-card" style="margin-bottom: 1.5rem;">
+              <div class="chart-card-header">
+                <div class="chart-title-group">
+                  <h2>Team Managers Governance Matrix</h2>
+                  <p>Team Managers appointed by Head, their team capacity, and delegated goal delivery rates</p>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button class="btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="window.openCreateManagerModal()">
+                    <i data-lucide="user-plus" style="width: 12px; height: 12px;"></i>
+                    <span>+ Create Manager</span>
+                  </button>
+                  <button class="btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="window.openHeadAssignModal()">
+                    <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
+                    <span>Assign Goal to Manager</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="team-table-wrapper">
+                <table class="enterprise-data-table">
+                  <thead>
+                    <tr>
+                      <th>Manager Name & Department</th>
+                      <th>Subordinate Team Size</th>
+                      <th>Directives Assigned by Head</th>
+                      <th>Team Delivery Velocity</th>
+                      <th>Manager Productivity</th>
+                      <th style="text-align: right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="headManagersTableBody">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Panel 3: Direct Employee Management Section -->
+          <div id="tab-head-workforce" class="dashboard-tab-panel">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-title-group">
+                  <h2>Organization-Wide Workforce Management (Direct Authority)</h2>
+                  <p>Head has complete access to create, remove, and directly manage employees across all teams</p>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <input type="text" id="headEmployeeSearch" class="filter-search-input" placeholder="Search any employee across org..." style="min-width: 220px;">
+                  <button class="btn-primary" id="btnHeadAddEmployee" onclick="window.openAddEmployeeModal()" style="font-size: 0.75rem; padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px;">
+                    <i data-lucide="user-plus" style="width: 13px; height: 13px;"></i>
+                    <span>+ Add Employee</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="team-table-wrapper">
+                <table class="enterprise-data-table">
+                  <thead>
+                    <tr>
+                      <th>Employee Persona</th>
+                      <th>Assigned Team Manager</th>
+                      <th>Department</th>
+                      <th>Productivity</th>
+                      <th>Focus Hours</th>
+                      <th>Status</th>
+                      <th style="text-align: right;">Head Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="headAllEmployeesTableBody">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             ROLE DASHBOARD 2: TEAM MANAGER DASHBOARD
+             Manager receives tasks from Head & distributes them to Employees
+             ================================================================== -->
+        <section class="role-dashboard-container" id="dashboard-manager">
+          
+          <div class="content-header">
+            <div class="content-title-area">
+              <div class="breadcrumb-trail">
+                <span>Enterprise Org</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span>Team Pod Leadership</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span class="breadcrumb-current" id="managerBreadcrumbName">Department Team Pod</span>
+              </div>
+              <h1 id="managerHeaderTitle">Department Team Management <span class="badge-role-tag badge-role-manager"><i data-lucide="briefcase" style="width:11px; height:11px;"></i> Team Management</span></h1>
+              <p id="managerHeaderSubtitle">Manager: <strong id="managerHeaderName">No Manager Appointed</strong> • <span id="managerHeaderEngineers">0</span> Engineers Assigned • <span id="managerHeaderDirectives">0</span> Head Directives Active</p>
+              
+              <!-- Persona Switcher: Select and change active manager -->
+              <div class="active-persona-bar" id="managerPersonaSwitcher">
+                <div class="persona-switch-label-wrap">
+                  <i data-lucide="briefcase" style="width: 14px; height: 14px; color: #4338CA;" aria-hidden="true"></i>
+                  <label for="managerSelectActive" class="persona-switch-label">Select Active Manager:</label>
+                </div>
+                <div class="persona-switch-inputs">
+                  <select id="managerSelectActive" class="persona-switch-dropdown" aria-label="Select active manager profile">
+                    <!-- Populated dynamically with all managers -->
+                  </select>
+                  <div class="persona-quick-pills" id="managerQuickPills" role="group" aria-label="Quick select manager">
+                    <!-- Quick pill buttons for 1-click switching -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="header-action-group">
+              <button class="btn-primary" id="btnOpenManagerDistributeModal">
+                <i data-lucide="share-2" style="width: 14px; height: 14px;"></i>
+                <span>Distribute Task to Employee</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- High-Efficiency Metrics Ribbon -->
+          <div class="metrics-ribbon">
+            <div class="metric-cell">
+              <div class="metric-cell-label">
+                <span>Directives from Head</span>
+                <span class="metric-trend-badge trend-neutral">From Head</span>
+              </div>
+              <div class="metric-cell-val" id="mgrDirectivesCount">0 <span class="metric-unit">Active</span></div>
+              <div class="metric-cell-sub">Allocated by Head Executive</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">
+                <span>My Team Members</span>
+                <span class="metric-trend-badge trend-up">Workforce</span>
+              </div>
+              <div class="metric-cell-val" id="mgrTeamCount">0 <span class="metric-unit">Engineers</span></div>
+              <div class="metric-cell-sub">Assigned to this pod</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">
+                <span>Subtasks Distributed</span>
+                <span class="metric-trend-badge trend-up">Sprint</span>
+              </div>
+              <div class="metric-cell-val" id="mgrTasksDistributedCount">0 <span class="metric-unit">Tasks</span></div>
+              <div class="metric-cell-sub">Assigned to pod engineers</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">
+                <span>Team Focus Duration</span>
+                <span class="metric-trend-badge trend-up">Focus</span>
+              </div>
+              <div class="metric-cell-val" id="mgrFocusDuration">0.0 <span class="metric-unit">hrs/day</span></div>
+              <div class="metric-cell-sub">Verified deep work telemetry</div>
+            </div>
+          </div>
+
+          <!-- Manager Sub-Navigation Tabs Bar -->
+          <div class="dashboard-tabs-bar">
+            <div class="tabs-group">
+              <button class="tab-item active" data-mgr-tab="tab-mgr-directives">
+                <i data-lucide="inbox" style="width: 14px; height: 14px;"></i>
+                <span>Directives from Head</span>
+                <span class="tab-badge" id="mgrDirectivesBadge">0</span>
+              </button>
+              <button class="tab-item" data-mgr-tab="tab-mgr-tasks">
+                <i data-lucide="share-2" style="width: 14px; height: 14px;"></i>
+                <span>Distributed Subtasks</span>
+                <span class="tab-badge" id="mgrTasksBadge">0</span>
+              </button>
+              <button class="tab-item" data-mgr-tab="tab-mgr-roster">
+                <i data-lucide="users" style="width: 14px; height: 14px;"></i>
+                <span>Team Engineers Roster</span>
+                <span class="tab-badge" id="mgrRosterBadge">0</span>
+              </button>
+            </div>
+            <div class="tabs-right-filter">
+              <button class="btn-secondary" style="height: 30px; font-size: 0.74rem; padding: 0 10px;" id="btnMgrAllPanels">
+                <i data-lucide="layout-grid" style="width: 12px; height: 12px;"></i>
+                <span id="btnMgrAllPanelsText">All Panels</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab Panel 1: Tasks Received from Head -->
+          <div id="tab-mgr-directives" class="dashboard-tab-panel active">
+            <div class="chart-card" style="margin-bottom: 1.5rem;">
+              <div class="chart-card-header">
+                <div class="chart-title-group">
+                  <h2>1. Strategic Directives Assigned to You by Head (ATHISH)</h2>
+                  <p>High-level goals delegated to you. Click "Distribute to Employee" to break down and assign to your team members.</p>
+                </div>
+                <span class="tag-pill tag-role-head">Direct from Head</span>
+              </div>
+
+              <div class="card-content-list" id="managerHeadDirectivesList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Panel 2: Tasks Distributed to My Team Employees -->
+          <div id="tab-mgr-tasks" class="dashboard-tab-panel">
+            <div class="chart-card" style="margin-bottom: 1.5rem;">
+              <div class="chart-card-header">
+                <div class="chart-title-group">
+                  <h2>2. Distributed Team Tasks & Employee Execution Status</h2>
+                  <p>Concrete tasks you have distributed to individual engineers. Monitor completion and review progress.</p>
+                </div>
+                <button class="btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="window.openManagerDistributeModal()">
+                  <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
+                  <span>Distribute New Task</span>
+                </button>
+              </div>
+
+              <div class="team-table-wrapper">
+                <table class="enterprise-data-table">
+                  <thead>
+                    <tr>
+                      <th>Task & Parent Directive</th>
+                      <th>Assigned Employee</th>
+                      <th>Target Date</th>
+                      <th>Progress</th>
+                      <th>Status</th>
+                      <th style="text-align: right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="managerDistributedTasksTableBody">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Panel 3: My Team Members Roster & 1-on-1 Approvals -->
+          <div id="tab-mgr-roster" class="dashboard-tab-panel">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-title-group">
+                  <h2>3. My Subordinate Engineers (Team Roster & 1-on-1s)</h2>
+                  <p>Team members under your direct management</p>
+                </div>
+              </div>
+
+              <div class="team-grid" id="managerTeamRosterGrid">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             ROLE DASHBOARD 3: EMPLOYEE DASHBOARD
+             Employee executes tasks distributed by Team Manager (or Head)
+             ================================================================== -->
+        <section class="role-dashboard-container" id="dashboard-employee">
+          
+          <div class="content-header">
+            <div class="content-title-area">
+              <div class="breadcrumb-trail">
+                <span>Enterprise Org</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span>Core Engineering</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span class="breadcrumb-current" id="employeeBreadcrumbName">Individual Contributor</span>
+              </div>
+              <h1>Individual Contributor Workspace <span class="badge-role-tag badge-role-employee"><i data-lucide="user-check" style="width:11px; height:11px;"></i> Contributor Workspace</span></h1>
+              <p id="employeeHeaderSubtitle">Employee: <strong id="employeeHeaderName">Loading...</strong> (<span id="employeeHeaderRole">Individual Contributor</span>) • Reporting to Manager: <strong id="employeeHeaderManager">Unassigned</strong></p>
+              
+              <!-- Persona Switcher: Select and change active employee -->
+              <div class="active-persona-bar" id="employeePersonaSwitcher">
+                <div class="persona-switch-label-wrap">
+                  <i data-lucide="user-check" style="width: 14px; height: 14px; color: var(--brand-primary);" aria-hidden="true"></i>
+                  <label for="employeeSelectActive" class="persona-switch-label">Select Active Employee:</label>
+                </div>
+                <div class="persona-switch-inputs">
+                  <select id="employeeSelectActive" class="persona-switch-dropdown" aria-label="Select active employee profile">
+                    <!-- Populated dynamically with all employees -->
+                  </select>
+                  <div class="persona-quick-pills" id="employeeQuickPills" role="group" aria-label="Quick select employee">
+                    <!-- Quick pill buttons for 1-click switching -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="header-action-group">
+              <button class="btn-primary" id="btnSubmitCheckin">
+                <i data-lucide="send" style="width: 14px; height: 14px;"></i>
+                <span>Submit Progress Check-in</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- High-Efficiency Metrics Ribbon -->
+          <div class="metrics-ribbon">
+            <div class="metric-cell">
+              <div class="metric-cell-label">
+                <span>My Productivity Score</span>
+                <span class="metric-trend-badge trend-up">Score</span>
+              </div>
+              <div class="metric-cell-val" id="empProductivityScore">95.0%</div>
+              <div class="metric-cell-sub">Live telemetry rating</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">
+                <span>Tasks Distributed to Me</span>
+                <span class="metric-trend-badge trend-up">Active Work</span>
+              </div>
+              <div class="metric-cell-val" id="empTaskCount">0 <span class="metric-unit">Tasks</span></div>
+              <div class="metric-cell-sub" id="empAssignedBySub">Assigned by Team Manager</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">
+                <span>Today's Focus Logged</span>
+                <span class="metric-trend-badge trend-up">Today</span>
+              </div>
+              <div class="metric-cell-val" id="empTodayFocus">0.0h</div>
+              <div class="metric-cell-sub">Sprint focus hours</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">
+                <span>Next 1-on-1 Review</span>
+                <span class="metric-trend-badge trend-neutral">Upcoming</span>
+              </div>
+              <div class="metric-cell-val" style="font-size: 1.35rem;" id="empNextReviewVal">Scheduled</div>
+              <div class="metric-cell-sub" id="emp1on1Sub">With Team Manager</div>
+            </div>
+          </div>
+
+          <!-- 2-Column High-Efficiency Productivity Cockpit -->
+          <div class="employee-cockpit-grid">
+            <!-- Left: Tasks from Manager -->
+            <div class="cockpit-left">
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div class="chart-title-group">
+                    <h2 id="empTasksSectionTitle">My Assigned Tasks</h2>
+                    <p>Drag progress slider to update completion, or click "Focus on this Task"</p>
+                  </div>
+                  <span class="tag-pill tag-role-manager"><i data-lucide="briefcase" style="width: 10px; height: 10px;"></i> From Manager</span>
+                </div>
+
+                <div class="card-content-list" id="employeeMyTasksList">
+                  <!-- Dynamically populated with interactive sliders -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Deep Work Focus Cockpit -->
+            <div class="cockpit-right">
+              <div class="chart-card" id="employeeTimerCard">
+                <div class="chart-card-header">
+                  <div class="chart-title-group">
+                    <h2>Deep Work Focus Clock</h2>
+                    <p id="empSyncSub">Verified telemetry auto-syncs to Team Manager</p>
+                  </div>
+                  <span class="cloud-telemetry-badge" style="height: 24px; font-size: 0.68rem;">
+                    <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--success-dot);"></span>
+                    <span>Live Telemetry</span>
+                  </span>
+                </div>
+
+                <div class="timer-hero-wrapper" style="box-shadow: none; border: none; padding: 0.5rem 0.5rem 1rem;">
+                  <div class="timer-mode-selector">
+                    <button class="timer-mode-btn active" data-time="25">25m Sprint</button>
+                    <button class="timer-mode-btn" data-time="50">50m Deep Code</button>
+                    <button class="timer-mode-btn" data-time="90">90m Flow State</button>
+                  </div>
+
+                  <div>
+                    <input type="text" id="employeeActiveTaskInput" class="timer-active-task-input" value="" placeholder="What task are you executing?">
+                  </div>
+
+                  <div class="digital-clock-display" id="bigTimerDisplay">25:00</div>
+
+                  <div class="timer-controls-group">
+                    <button class="btn-timer-secondary" id="btnTimerReset" title="Reset Session">
+                      <i data-lucide="rotate-ccw"></i>
+                    </button>
+                    <button class="btn-timer-primary" id="btnTimerToggle" title="Start Focus Session">
+                      <i data-lucide="play" id="timerPlayIcon"></i>
+                    </button>
+                    <button class="btn-timer-secondary" id="btnTimerLog" title="Save & Log Session">
+                      <i data-lucide="check"></i>
+                    </button>
+                  </div>
+
+                  <div style="margin-top: 1.25rem; font-size: 0.76rem; color: var(--text-tertiary);">
+                    Completed sprints today: <strong style="color: var(--brand-primary);" id="todaySprintsTotal">0 sessions</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </div> <!-- End #view-dashboard -->
+
+        <!-- ==================================================================
+             VIEW 2: DEDICATED TASKS MANAGEMENT
+             ================================================================== -->
+        <section class="page-view-section" id="view-tasks">
+          <div class="content-header">
+            <div class="content-title-area">
+              <div class="breadcrumb-trail">
+                <span>Enterprise Org</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span>Execution Pipeline</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span class="breadcrumb-current">All Organization Tasks</span>
+              </div>
+              <h1>Organization Tasks & Delivery Pipeline</h1>
+              <p>Search, filter, track progress, and manage distributed work packages across all engineering and operations teams.</p>
+            </div>
+            <div class="header-action-group">
+              <button class="btn-secondary" id="btnRefreshTasksList">
+                <i data-lucide="rotate-cw" style="width: 14px; height: 14px;"></i>
+                <span>Refresh API</span>
+              </button>
+              <button class="btn-primary" id="btnOpenCreateTaskModal">
+                <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                <span>+ Create Task</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tasks Filter Bar -->
+          <div class="filter-bar-wrapper">
+            <div class="filter-controls-left">
+              <button class="filter-chip active" data-task-filter="all">All Tasks</button>
+              <button class="filter-chip" data-task-filter="In Progress">In Progress</button>
+              <button class="filter-chip" data-task-filter="Ready for Review">Ready for Review</button>
+              <button class="filter-chip" data-task-filter="Completed">Completed</button>
+              <button class="filter-chip" data-task-filter="Overdue">Overdue</button>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="text" id="taskSearchInput" class="filter-search-input" placeholder="Search tasks by title, directive, assignee..." style="min-width: 260px;">
+              <select id="taskAssigneeFilter" class="form-select" style="width: auto; padding: 4px 10px; height: 32px; font-size: 0.75rem;">
+                <option value="all">All Assignees</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tasks Data Table Card -->
+          <div class="chart-card">
+            <div class="team-table-wrapper">
+              <table class="enterprise-data-table" id="allTasksDataTable">
+                <thead>
+                  <tr>
+                    <th>Task Details & Parent Directive</th>
+                    <th>Assignee</th>
+                    <th>Manager</th>
+                    <th>Due Date</th>
+                    <th>Effort</th>
+                    <th>Completion</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="allTasksTableBody">
+                  <!-- Dynamically rendered -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="tasksEmptyState" class="empty-state-card" style="display: none;">
+              <div class="empty-state-icon-box">
+                <i data-lucide="check-square" style="width: 24px; height: 24px;"></i>
+              </div>
+              <h3 class="empty-state-title">No tasks found</h3>
+              <p class="empty-state-desc">No tasks match your current filter criteria or backend query. Create a new task or adjust your search.</p>
+              <button class="btn-primary" onclick="window.openCreateTaskModal()">
+                <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                <span>Create New Task</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             VIEW 3: STRATEGIC GOALS & OKRs
+             ================================================================== -->
+        <section class="page-view-section" id="view-goals">
+          <div class="content-header">
+            <div class="content-title-area">
+              <div class="breadcrumb-trail">
+                <span>Enterprise Org</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span>Governance</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span class="breadcrumb-current">Strategic OKRs</span>
+              </div>
+              <h1>Strategic Objectives & Head Directives</h1>
+              <p>Executive OKRs delegated by Head of Cloud Org, distributed across Team Managers, and linked to concrete sprint deliverables.</p>
+            </div>
+            <div class="header-action-group">
+              <button class="btn-primary" onclick="window.openHeadAssignModal()">
+                <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                <span>Issue New Goal / Directive</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="allGoalsCardsContainer" class="card-content-list" style="margin-top: 1rem;">
+            <!-- Dynamically rendered -->
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             VIEW 4: WORKFORCE & EMPLOYEES DIRECTORY
+             ================================================================== -->
+        <section class="page-view-section" id="view-employees">
+          <div class="content-header">
+            <div class="content-title-area">
+              <div class="breadcrumb-trail">
+                <span>Enterprise Org</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span>Workforce</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span class="breadcrumb-current">Personnel Directory</span>
+              </div>
+              <h1>Organization Workforce Directory & Capacity</h1>
+              <p>Cross-team engineers, designers, and managers with live productivity indices, sprint focus hours, and 1-on-1 dossiers.</p>
+            </div>
+            <div class="header-action-group">
+              <input type="text" id="employeeDirectorySearch" class="filter-search-input" placeholder="Search employee name, department, role..." style="min-width: 260px;">
+              <button class="btn-primary" id="btnOpenAddEmployeeModal" onclick="window.openAddEmployeeModal()" style="display: inline-flex; align-items: center; gap: 6px;">
+                <i data-lucide="user-plus" style="width: 14px; height: 14px;"></i>
+                <span>+ Add Employee</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="team-grid" id="allEmployeesDirectoryGrid" style="margin-top: 1.25rem;">
+            <!-- Dynamically rendered -->
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             VIEW 5: REPORTS & CLOUD ANALYTICS
+             ================================================================== -->
+        <section class="page-view-section" id="view-reports">
+          <div class="content-header">
+            <div class="content-title-area">
+              <div class="breadcrumb-trail">
+                <span>Enterprise Org</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span>Enterprise Intelligence</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span class="breadcrumb-current">Org Health & Velocity</span>
+              </div>
+              <h1>Enterprise Productivity Reports & Telemetry</h1>
+              <p>Live workforce throughput analytics, sprint burnup curves, SLA compliance rates, and multi-region AWS cloud health.</p>
+            </div>
+            <div class="header-action-group">
+              <button class="btn-secondary" id="btnExportJsonReport">
+                <i data-lucide="code" style="width: 14px; height: 14px;"></i>
+                <span>Download JSON Metrics</span>
+              </button>
+              <button class="btn-primary" id="btnExportAuditPdf">
+                <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+                <span>Export Org Audit (PDF)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="dashboard-charts-grid" style="margin-top: 1.25rem;">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-title-group">
+                  <h2>Organization Productivity Velocity Trend</h2>
+                  <p>Weekly throughput and deep work focus hours aggregated across all teams</p>
+                </div>
+                <span class="tag-pill tag-emerald">+18.4% Velocity</span>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chartVelocityTrend"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-title-group">
+                  <h2>Cloud SLA & Delivery Compliance</h2>
+                  <p>On-time task milestones vs strategic deadlines</p>
+                </div>
+                <span class="tag-pill tag-indigo">99.4% Adherence</span>
+              </div>
+              <div id="slaPodList" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Populated dynamically from appointed managers -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             VIEW 6: NOTIFICATIONS CENTER
+             ================================================================== -->
+        <section class="page-view-section" id="view-notifications">
+          <div class="content-header">
+            <div class="content-title-area">
+              <div class="breadcrumb-trail">
+                <span>Enterprise Org</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span>Communications</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span class="breadcrumb-current">Alerts & Directives</span>
+              </div>
+              <h1>Notification Center & Delegation Notices</h1>
+              <p>Live stream of executive goal assignments, engineer check-ins, SLA reminders, and system alerts.</p>
+            </div>
+            <div class="header-action-group">
+              <button class="btn-secondary" id="btnMarkAllNotifsRead">
+                <i data-lucide="check-check" style="width: 14px; height: 14px;"></i>
+                <span>Mark All Read</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="chart-card" style="margin-top: 1.25rem;">
+            <div class="card-content-list" id="notificationsFeedList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Hidden API Configuration Container (Suppressed from UI for clean executive interface) -->
+        <div style="display: none !important;" hidden aria-hidden="true">
+        <section class="page-view-section" id="view-settings-api">
+          <div class="content-header">
+            <div class="content-title-area">
+              <div class="breadcrumb-trail">
+                <span>Enterprise Settings</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span>Integrations</span>
+                <i data-lucide="chevron-right" style="width: 12px; height: 12px;"></i>
+                <span class="breadcrumb-current">API Configuration</span>
+              </div>
+              <h1>Live REST API & AWS Gateway Configuration</h1>
+              <p>Connect CloudPulse to your real AWS API Gateway, Lambda, Cognito, or custom backend. Test connectivity with deep diagnostics.</p>
+            </div>
+          </div>
+
+          <!-- Live Connection Status Banner -->
+          <div class="api-connection-status-card api-status-demo" id="apiStatusBannerCard">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span class="status-badge-lg tag-amber" id="apiStatusBadge">
+                  <i data-lucide="radio" style="width: 14px; height: 14px;"></i>
+                  <span id="apiStatusBadgeText">Demo Mode (Mock Backend)</span>
+                </span>
+                <span class="cloud-ping" id="apiStatusPing">-- ms</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-secondary);" id="apiStatusEndpointText">
+                Active URL: <strong>Local In-Memory Mock Store</strong>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 2px;" id="apiStatusLastChecked">
+                Last checked: Not tested yet
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-primary" id="btnTestConnectionMain">
+                <i data-lucide="activity" style="width: 14px; height: 14px;"></i>
+                <span>Test Connection</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Configuration Form Grid -->
+          <div class="api-config-grid">
+            <!-- Left Column: Settings Form -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-title-group">
+                  <h2>Backend Endpoint & Authentication Settings</h2>
+                  <p>Configure your production or development REST API Gateway endpoint</p>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <button class="btn-secondary" style="font-size: 0.72rem; height: 26px; padding: 0 8px;" id="btnPresetAws">
+                    AWS Mumbai (Prod)
+                  </button>
+                  <button class="btn-secondary" style="font-size: 0.72rem; height: 26px; padding: 0 8px;" id="btnPresetLocal">
+                    Localhost
+                  </button>
+                </div>
+              </div>
+
+              <form id="formApiConfiguration" style="padding: 1.25rem;">
+                <!-- 1. API Base URL -->
+                <div class="form-group">
+                  <label class="form-label" for="cfgApiBaseUrl">Backend API Base URL *</label>
+                  <input type="url" id="cfgApiBaseUrl" class="form-input font-mono" placeholder="https://zpbpv26plb.execute-api.ap-south-1.amazonaws.com/prod" value="https://zpbpv26plb.execute-api.ap-south-1.amazonaws.com/prod" required>
+                  <div style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px;">
+                    Enter the root or stage URL of your API Gateway (e.g. <code>https://zpbpv26plb.execute-api.ap-south-1.amazonaws.com/prod</code>). Do not include trailing resource paths like <code>/tasks</code> or <code>/chat</code>.
+                  </div>
+                </div>
+
+                <!-- 2. Authentication Mode -->
+                <div class="form-group" style="margin-top: 1.25rem;">
+                  <label class="form-label">Authentication Mode *</label>
+                  <div class="auth-mode-selector-grid">
+                    <div class="auth-mode-card active" data-auth-mode="none" id="authModeNone">
+                      <i data-lucide="unlock" style="width: 16px; height: 16px; color: var(--text-tertiary);"></i>
+                      <div class="auth-mode-title">No Auth</div>
+                      <div class="auth-mode-desc">Public or Local</div>
+                    </div>
+                    <div class="auth-mode-card" data-auth-mode="bearer" id="authModeBearer">
+                      <i data-lucide="key" style="width: 16px; height: 16px; color: var(--brand-primary);"></i>
+                      <div class="auth-mode-title">Bearer Token</div>
+                      <div class="auth-mode-desc">JWT / OAuth2</div>
+                    </div>
+                    <div class="auth-mode-card" data-auth-mode="cognito" id="authModeCognito">
+                      <i data-lucide="shield-check" style="width: 16px; height: 16px; color: #10B981;"></i>
+                      <div class="auth-mode-title">AWS Cognito</div>
+                      <div class="auth-mode-desc">User Pool ID</div>
+                    </div>
+                    <div class="auth-mode-card" data-auth-mode="apikey" id="authModeApiKey">
+                      <i data-lucide="tag" style="width: 16px; height: 16px; color: #F59E0B;"></i>
+                      <div class="auth-mode-title">API Key</div>
+                      <div class="auth-mode-desc">x-api-key header</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 3. Dynamic Auth Credentials Fields -->
+                <div id="authFieldsBearer" class="auth-fields-section" style="display: none;">
+                  <div class="form-group">
+                    <label class="form-label" for="cfgBearerToken">Bearer Access Token</label>
+                    <input type="password" id="cfgBearerToken" class="form-input font-mono" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                    <div style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px;">
+                      Injected as <code>Authorization: Bearer &lt;token&gt;</code> on protected requests.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="authFieldsCognito" class="auth-fields-section" style="display: none;">
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="form-group">
+                      <label class="form-label" for="cfgCognitoUserPool">Cognito User Pool ID</label>
+                      <input type="text" id="cfgCognitoUserPool" class="form-input font-mono" placeholder="us-east-1_abcdef123">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="cfgCognitoClientId">Cognito App Client ID</label>
+                      <input type="text" id="cfgCognitoClientId" class="form-input font-mono" placeholder="7abcdef1234567890abcdef">
+                    </div>
+                  </div>
+                  <div class="form-group" style="margin-top: 0.5rem;">
+                    <label class="form-label" for="cfgCognitoToken">Cognito ID or Access Token</label>
+                    <input type="password" id="cfgCognitoToken" class="form-input font-mono" placeholder="Cognito User Token...">
+                    <div style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px;">
+                      Note: Cognito App Client IDs are public in client applications. No confidential client secret should ever be stored in browser code.
+                    </div>
+                  </div>
+                </div>
+
+                <div id="authFieldsApiKey" class="auth-fields-section" style="display: none;">
+                  <div class="form-group">
+                    <label class="form-label" for="cfgApiKey">API Key Header Value</label>
+                    <input type="password" id="cfgApiKey" class="form-input font-mono" placeholder="Enter x-api-key value...">
+                    <div style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px;">
+                      Sent as <code>x-api-key: &lt;key&gt;</code>. Only use if your AWS API Gateway Usage Plan explicitly requires it.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 1rem;">
+                  <label class="form-label" for="cfgHealthEndpoint">Health Probe Endpoint</label>
+                  <input type="text" id="cfgHealthEndpoint" class="form-input font-mono" value="/health" placeholder="/health">
+                </div>
+
+                <!-- Diagnosis Result Box -->
+                <div id="apiDiagnosticBox" class="diagnostic-alert-box" style="display: none;">
+                  <div style="display: flex; align-items: flex-start; gap: 8px;">
+                    <i data-lucide="info" id="diagIcon" style="width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;"></i>
+                    <div>
+                      <strong id="diagTitle">Diagnostic Result</strong>
+                      <div id="diagMessage" style="margin-top: 4px; font-size: 0.78rem;"></div>
+                      <div id="diagFix" style="margin-top: 6px; font-size: 0.75rem; font-weight: 600;"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
+                  <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-secondary" id="btnResetApiConfig">
+                      <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i>
+                      <span>Reset</span>
+                    </button>
+                    <button type="button" class="btn-secondary" id="btnClearCredentials">
+                      <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                      <span>Clear Saved Data</span>
+                    </button>
+                  </div>
+
+                  <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-secondary" id="btnTestConfigInForm">
+                      <i data-lucide="activity" style="width: 14px; height: 14px;"></i>
+                      <span>Test Probe</span>
+                    </button>
+                    <button type="submit" class="btn-primary" id="btnSaveApiConfig">
+                      <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+                      <span>Save & Apply</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right Column: Endpoints Matrix & AWS Integration Guide -->
+            <div>
+              <div class="chart-card" style="margin-bottom: 1.25rem;">
+                <div class="chart-card-header">
+                  <div class="chart-title-group">
+                    <h2>Endpoint Diagnostics Matrix</h2>
+                    <p>Live readiness status per backend resource</p>
+                  </div>
+                  <button class="btn-secondary" style="font-size: 0.72rem; height: 26px; padding: 0 8px;" id="btnProbeAllEndpoints">
+                    <i data-lucide="refresh-cw" style="width: 11px; height: 11px;"></i>
+                    <span>Probe All</span>
+                  </button>
+                </div>
+
+                <div style="padding: 0.75rem 1rem;">
+                  <div class="team-table-wrapper">
+                    <table class="enterprise-data-table">
+                      <thead>
+                        <tr>
+                          <th>Resource</th>
+                          <th>Method</th>
+                          <th style="text-align: right;">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="endpointMatrixBody">
+                        <tr>
+                          <td><code>/health</code></td>
+                          <td><span class="tag-pill tag-indigo">GET</span></td>
+                          <td style="text-align: right;"><span class="endpoint-probe-badge endpoint-probe-pending" id="probeStatusHealth">Untested</span></td>
+                        </tr>
+                        <tr>
+                          <td><code>/tasks</code></td>
+                          <td><span class="tag-pill tag-indigo">GET</span></td>
+                          <td style="text-align: right;"><span class="endpoint-probe-badge endpoint-probe-pending" id="probeStatusTasks">Untested</span></td>
+                        </tr>
+                        <tr>
+                          <td><code>/goals</code></td>
+                          <td><span class="tag-pill tag-indigo">GET</span></td>
+                          <td style="text-align: right;"><span class="endpoint-probe-badge endpoint-probe-pending" id="probeStatusGoals">Untested</span></td>
+                        </tr>
+                        <tr>
+                          <td><code>/employees</code></td>
+                          <td><span class="tag-pill tag-indigo">GET</span></td>
+                          <td style="text-align: right;"><span class="endpoint-probe-badge endpoint-probe-pending" id="probeStatusEmployees">Untested</span></td>
+                        </tr>
+                        <tr>
+                          <td><code>/analytics</code></td>
+                          <td><span class="tag-pill tag-indigo">GET</span></td>
+                          <td style="text-align: right;"><span class="endpoint-probe-badge endpoint-probe-pending" id="probeStatusAnalytics">Untested</span></td>
+                        </tr>
+                        <tr>
+                          <td><code>/notifications</code></td>
+                          <td><span class="tag-pill tag-indigo">GET</span></td>
+                          <td style="text-align: right;"><span class="endpoint-probe-badge endpoint-probe-pending" id="probeStatusNotifs">Untested</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- AWS API Gateway Architecture Cheatsheet -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div class="chart-title-group">
+                    <h2>AWS API Gateway & CORS Cheatsheet</h2>
+                    <p>Required backend response headers</p>
+                  </div>
+                </div>
+                <div style="padding: 1rem; font-size: 0.76rem; color: var(--text-secondary); line-height: 1.6;">
+                  <p style="margin-bottom: 0.5rem;">To connect without browser CORS blocks, ensure your Lambda / API Gateway returns:</p>
+                  <pre style="background: var(--bg-surface-subtle); padding: 8px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; overflow-x: auto; margin-bottom: 0.75rem;">
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: Content-Type,Authorization,x-api-key
+Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,OPTIONS</pre>
+                  <ul style="padding-left: 1.1rem; display: flex; flex-direction: column; gap: 4px;">
+                    <li>Enable Mock Integration on <code>OPTIONS</code> preflight routes.</li>
+                    <li>Return status code 200 with empty body on OPTIONS.</li>
+                    <li>Lambda exceptions must include CORS headers in error responses.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       MODALS & DIALOGS
+       ==================================================================== -->
+
+  <!-- Modal 1: Head Assigns Initiative to Team Manager -->
+  <div class="modal-overlay" id="modalHeadAssign">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="crown" style="width: 18px; height: 18px; color: var(--brand-primary);"></i>
+          <span>Head: Assign Strategic Goal to Team Manager</span>
+        </h2>
+        <button class="btn-close-modal" id="btnCloseHeadModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="formHeadAssign">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="headGoalTitle">Strategic Objective Title *</label>
+            <input type="text" id="headGoalTitle" class="form-input" placeholder="e.g. Migrate Core Payment Gateway to Distributed Cloud" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="headSelectManager">Assign to Team Manager *</label>
+              <select id="headSelectManager" class="form-select">
+                <!-- Dynamically populated from appointed managers -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="headGoalPriority">Executive Priority *</label>
+              <select id="headGoalPriority" class="form-select">
+                <option value="Critical P0">Critical P0 (Immediate)</option>
+                <option value="High P1" selected>High P1 (Quarterly)</option>
+                <option value="Medium P2">Medium P2</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="headGoalDeadline">Target Delivery SLA *</label>
+              <input type="date" id="headGoalDeadline" class="form-input" value="2026-11-15">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="headGoalWeight">OKR Weight / Impact *</label>
+              <select id="headGoalWeight" class="form-select">
+                <option value="35% Weight">35% of Q3 Strategy</option>
+                <option value="25% Weight" selected>25% of Q3 Strategy</option>
+                <option value="15% Weight">15% of Q3 Strategy</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="headGoalDirective">Directive Notes to Manager</label>
+            <textarea id="headGoalDirective" class="form-textarea" rows="2" placeholder="e.g. Break this down into key milestones, assign tasks to your engineers, and report weekly progress."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelHeadAssign">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <i data-lucide="send" style="width: 14px; height: 14px;"></i>
+            <span>Issue Directive to Manager</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Team Manager Distributes Task to Employee -->
+  <div class="modal-overlay" id="modalManagerDistribute">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="briefcase" style="width: 18px; height: 18px; color: var(--brand-primary);"></i>
+          <span>Manager: Distribute Task to Employee</span>
+        </h2>
+        <button class="btn-close-modal" id="btnCloseManagerModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="formManagerDistribute">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="mgrSelectParentDirective">Parent Directive (From Head) *</label>
+            <select id="mgrSelectParentDirective" class="form-select">
+              <option value="Scale Cloud Microservices Architecture for 10M DAU">Scale Cloud Microservices Architecture for 10M DAU</option>
+              <option value="Zero-Trust Network Access & SOC2 Type-II Compliance Infrastructure">Zero-Trust Network Access & SOC2 Type-II Compliance Infrastructure</option>
+              <option value="Migrate Core Payment Gateway to Distributed Multi-Region Cloud">Migrate Core Payment Gateway to Distributed Multi-Region Cloud</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mgrTaskTitle">Subtask Title to Distribute *</label>
+            <input type="text" id="mgrTaskTitle" class="form-input" placeholder="e.g. Implement Redis distributed caching for user session tokens" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="mgrSelectEmployee">Assignee Employee *</label>
+              <select id="mgrSelectEmployee" class="form-select">
+                <!-- Dynamically populated from database employees -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="mgrTaskDueDate">Due Date *</label>
+              <input type="date" id="mgrTaskDueDate" class="form-input" value="2026-10-25">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="mgrEstHours">Estimated Deep Work Hours *</label>
+              <input type="number" id="mgrEstHours" class="form-input" value="18" min="1" max="100">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="mgrTaskPriority">Priority Level</label>
+              <select id="mgrTaskPriority" class="form-select">
+                <option value="High Priority">High Priority</option>
+                <option value="Normal">Normal</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelManagerModal">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <i data-lucide="share-2" style="width: 14px; height: 14px;"></i>
+            <span>Distribute Task to Employee</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Employee Performance Dossier / Scorecard -->
+  <div class="modal-overlay" id="modalEmployeeScorecard">
+    <div class="modal-dialog" style="max-width: 620px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="scorecardEmployeeName">Employee Performance Dossier</h2>
+        <button class="btn-close-modal" id="btnCloseScorecard">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="scorecardModalContent">
+        <!-- Dynamically rendered -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btnCloseScorecardFooter">Close</button>
+        <button type="button" class="btn-secondary" id="btnEditScorecardEmployee" style="display: none; align-items: center; gap: 4px;" onclick="window.openEditFromScorecard()">
+          <i data-lucide="edit-3" style="width: 13px; height: 13px;"></i>
+          <span>Edit Details</span>
+        </button>
+        <button type="button" class="btn-primary" id="btnSchedule1on1">
+          <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+          <span>Schedule 1-on-1 Review</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Palette Modal (Ctrl + K) -->
+  <div class="modal-overlay" id="modalCmdPalette">
+    <div class="modal-dialog cmd-palette-dialog">
+      <div class="cmd-palette-input-wrap">
+        <i data-lucide="search" style="width: 18px; height: 18px; color: var(--brand-primary);"></i>
+        <input type="text" class="cmd-input" id="cmdPaletteInput" placeholder="Switch role, search tasks, or employees..." autocomplete="off">
+        <span class="search-shortcut-kbd">ESC</span>
+      </div>
+      <div class="cmd-results-list" id="cmdResultsContainer">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Create / Edit Task Modal -->
+  <div class="modal-overlay" id="modalCreateTask">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="check-square" style="width: 18px; height: 18px; color: var(--brand-primary);"></i>
+          <span id="modalTaskFormTitle">Create New Organization Task</span>
+        </h2>
+        <button class="btn-close-modal" id="btnCloseCreateTaskModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="formCreateTask">
+        <div class="modal-body">
+          <input type="hidden" id="taskFormEditId" value="">
+
+          <div class="form-group">
+            <label class="form-label" for="taskFormTitle">Task Title *</label>
+            <input type="text" id="taskFormTitle" class="form-input" placeholder="e.g. Implement Redis distributed session cache for API Gateway" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="taskFormAssignee">Assignee Employee *</label>
+              <select id="taskFormAssignee" class="form-select">
+                <!-- Dynamically populated from database employees -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskFormManager">Supervising Manager *</label>
+              <select id="taskFormManager" class="form-select">
+                <!-- Dynamically populated from appointed managers -->
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label" for="taskFormDueDate">Due Date *</label>
+              <input type="date" id="taskFormDueDate" class="form-input" value="2026-10-30" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskFormEstHours">Est. Hours *</label>
+              <input type="number" id="taskFormEstHours" class="form-input" value="16" min="1" max="200" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskFormStatus">Status *</label>
+              <select id="taskFormStatus" class="form-select">
+                <option value="In Progress">In Progress</option>
+                <option value="Ready for Review">Ready for Review</option>
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelCreateTaskModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="btnSubmitTaskForm">
+            <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+            <span id="btnSubmitTaskFormText">Create Task</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 6: Add Employee (Head Authority) -->
+  <div class="modal-overlay" id="modalAddEmployee">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="user-plus" style="width: 18px; height: 18px; color: var(--brand-primary);"></i>
+          <span>Add New Employee (Head Access)</span>
+        </h2>
+        <button class="btn-close-modal" id="btnCloseAddEmployeeModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="formAddEmployee">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="newEmpName">Full Name *</label>
+            <input type="text" id="newEmpName" class="form-input" placeholder="e.g. Rachel Adams" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newEmpRole">Role / Job Title *</label>
+            <input type="text" id="newEmpRole" class="form-input" placeholder="e.g. Senior Cloud DevOps Engineer" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="newEmpDept">Department *</label>
+              <select id="newEmpDept" class="form-select">
+                <option value="Engineering" selected>Engineering</option>
+                <option value="Security & Platform">Security & Platform</option>
+                <option value="Design">Design</option>
+                <option value="Product">Product</option>
+                <option value="Data & Cloud AI">Data & Cloud AI</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newEmpManager">Supervising Manager *</label>
+              <select id="newEmpManager" class="form-select">
+                <!-- Dynamically populated from appointed managers -->
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="newEmpStatus">Initial Status</label>
+              <select id="newEmpStatus" class="form-select">
+                <option value="Online" selected>Online</option>
+                <option value="Deep Work">Deep Work</option>
+                <option value="In Meeting">In Meeting</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newEmpProductivity">Productivity Rating (%)</label>
+              <input type="number" id="newEmpProductivity" class="form-input" value="95" min="50" max="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newEmpKudos">Initial Notes / Strengths</label>
+            <textarea id="newEmpKudos" class="form-textarea" rows="2" placeholder="e.g. Specialist in AWS Lambda, Kubernetes, and distributed architectures."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelAddEmployeeModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="btnSubmitAddEmployee">
+            <i data-lucide="user-plus" style="width: 14px; height: 14px;"></i>
+            <span>Add Employee</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 7: Edit Employee Modal (Head Access) -->
+  <div class="modal-overlay" id="modalEditEmployee">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="edit-3" style="width: 18px; height: 18px; color: var(--brand-primary);"></i>
+          <span>Edit Employee Details (Head Access)</span>
+        </h2>
+        <button class="btn-close-modal" id="btnCloseEditEmployeeModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="formEditEmployee">
+        <input type="hidden" id="editEmpId" value="">
+        <input type="hidden" id="editEmpDbTaskId" value="">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editEmpName">Full Name *</label>
+            <input type="text" id="editEmpName" class="form-input" placeholder="e.g. Rachel Adams" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editEmpRole">Role / Job Title *</label>
+            <input type="text" id="editEmpRole" class="form-input" placeholder="e.g. Senior Cloud DevOps Engineer" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="editEmpDept">Department *</label>
+              <select id="editEmpDept" class="form-select">
+                <option value="Engineering">Engineering</option>
+                <option value="Security & Platform">Security & Platform</option>
+                <option value="Design">Design</option>
+                <option value="Product">Product</option>
+                <option value="Data & Cloud AI">Data & Cloud AI</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editEmpManager">Supervising Manager *</label>
+              <select id="editEmpManager" class="form-select">
+                <!-- Dynamically populated from appointed managers -->
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="editEmpStatus">Status</label>
+              <select id="editEmpStatus" class="form-select">
+                <option value="Online">Online</option>
+                <option value="Deep Work">Deep Work</option>
+                <option value="In Meeting">In Meeting</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editEmpProductivity">Productivity Rating (%)</label>
+              <input type="number" id="editEmpProductivity" class="form-input" min="50" max="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editEmpKudos">Notes / Strengths / Key Achievements</label>
+            <textarea id="editEmpKudos" class="form-textarea" rows="2" placeholder="e.g. Specialist in AWS Lambda, Kubernetes, and distributed architectures."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelEditEmployeeModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="btnSubmitEditEmployee">
+            <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+            <span>Save Changes to Database</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 8: Appoint Team Manager (Head Authority Only) -->
+  <div class="modal-overlay" id="modalCreateManager">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span class="tag-pill tag-role-head" style="margin-bottom: 4px;"><i data-lucide="crown" style="width: 11px; height: 11px;"></i> Head Executive Authority</span>
+          <h2 class="modal-title">Appoint New Team Manager</h2>
+        </div>
+        <button class="btn-close-modal" id="btnCloseCreateManagerModal" type="button" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="formCreateManager">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="newMgrName">Manager Full Name *</label>
+            <input type="text" id="newMgrName" class="form-input" placeholder="e.g. Rachel Adams" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newMgrDept">Department / Pod *</label>
+            <input type="text" id="newMgrDept" class="form-input" list="departmentSuggestions" placeholder="e.g. Engineering & Cloud Architecture" required>
+            <datalist id="departmentSuggestions">
+              <option value="Engineering & Cloud Architecture">
+              <option value="Security & Cloud Governance">
+              <option value="Product Design Systems">
+              <option value="Data & Analytics">
+              <option value="DevOps & Platform Engineering">
+              <option value="Quality Assurance & Testing">
+            </datalist>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="newMgrRole">Managerial Title / Role *</label>
+              <input type="text" id="newMgrRole" class="form-input" placeholder="e.g. Engineering Manager" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="newMgrEmail">Work Email (Optional)</label>
+              <input type="email" id="newMgrEmail" class="form-input" placeholder="e.g. rachel@cloudpulse.io">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newMgrMandate">Department Mandate / Initial Focus</label>
+            <textarea id="newMgrMandate" class="form-textarea" rows="2" placeholder="e.g. Lead team execution on cloud infrastructure modernization, SOC2 compliance, and API latency optimization."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelCreateManagerModal">Cancel</button>
+          <button type="submit" class="btn-primary" id="btnSubmitCreateManager">
+            <i data-lucide="user-check" style="width: 14px; height: 14px;"></i>
+            <span>Appoint Manager</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Centralized API Client & Service Engine -->
+  <script src="api-client.js?v=4.0"></script>
+
+  <!-- Application Engine -->
+  <script src="app.js?v=4.0"></script>
+</body>
+</html>

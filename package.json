@@ -1,0 +1,23 @@
+{
+  "name": "cloudpulse-frontend",
+  "version": "2.0.0",
+  "description": "CloudPulse - A Cloud-Based Employee Productivity and Goal Management System with Live API Integration",
+  "main": "index.html",
+  "scripts": {
+    "start": "node dev-server.js",
+    "dev": "node dev-server.js",
+    "test": "node tests/integration-test.js && node tests/employee-and-avatar-test.js && node tests/persona-switcher-test.js"
+  },
+  "keywords": [
+    "cloudpulse",
+    "productivity",
+    "okr",
+    "aws",
+    "api-gateway",
+    "cognito",
+    "dashboard",
+    "saas"
+  ],
+  "author": "CloudPulse Engineering",
+  "license": "MIT"
+}
